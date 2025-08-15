@@ -1,0 +1,13 @@
+{
+  "name": "mvu-api-correct",
+  "display_name": "MVU API 矫正助手",
+  "version": "1.7.001",
+  "author": "LiuLi",
+  "description": "一个强大的API测试和文本矫正工具，支持多种AI模型和任务类型，具备智能提示词管理和正则表达式处理能力。",
+  "minSillyTavernVersion": "1.10.0",
+  "requires": [],
+  "homePage": "https://github.com/fdaf11/mvu_project.git",
+  "loading_order": 100,
+  "js": "./src/mvu_api_correct/index.js",
+  "styles": "./src/mvu_api_correct/style.css"
+}

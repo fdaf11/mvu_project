@@ -1,0 +1,4 @@
+port: 6621
+entries:
+  - script: src/mvu_api_correct/index.ts
+    html: src/mvu_api_correct/index.html

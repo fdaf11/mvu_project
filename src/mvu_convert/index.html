@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVU变量转换器测试</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .test-button {
+        display: block;
+        width: 200px;
+        margin: 20px auto;
+        padding: 15px 30px;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .test-button:hover {
+        background-color: #357abd;
+      }
+      .description {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>MVU变量转换器测试页面</h1>
+      <div class="description">
+        <p>这是一个测试页面，用于测试MVU变量转换器的功能。</p>
+        <p>点击下面的按钮可以打开MVU变量转换器弹窗。</p>
+        <p>注意：此功能需要在SillyTavern环境中运行才能正常工作。</p>
+      </div>
+      <button class="test-button" id="test-mvu-converter">测试MVU转换器</button>
+    </div>
+
+    <script>
+      // 测试按钮事件处理
+      document.getElementById('test-mvu-converter').addEventListener('click', function () {
+        console.log('[MVU Converter Test] 测试按钮被点击');
+
+        // 检查是否在SillyTavern环境中
+        if (typeof mvuConverter !== 'undefined') {
+          console.log('[MVU Converter Test] 调用mvuConverter.showModal()');
+          mvuConverter.showModal();
+        } else {
+          console.error('[MVU Converter Test] mvuConverter未定义，请确保在SillyTavern环境中运行');
+          alert('错误：mvuConverter未定义。请确保在SillyTavern环境中运行此页面。');
+        }
+      });
+
+      console.log('[MVU Converter Test] 测试页面已加载');
+    </script>
+  </body>
+</html>

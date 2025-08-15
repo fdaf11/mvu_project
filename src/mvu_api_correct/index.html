@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVU 二次矫正 · 接口测试台</title>
+    <style>
+      /* v1.1.0: 基础样式，仅用于本地测试台 */
+      :root {
+        --gap: 10px;
+        --pad: 10px;
+        --bg: #0f1115;
+        --panel: #191c24;
+        --text: #e6e6e6;
+        --accent: #7aa2f7;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell,
+          Helvetica Neue, Arial, '苹果丽黑', 'Microsoft YaHei';
+        background: var(--bg);
+        color: var(--text);
+      }
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      }
+      .row {
+        display: grid;
+        gap: var(--gap);
+      }
+      .row.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .row.cols-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      label {
+        font-size: 12px;
+        color: #aab1bf;
+      }
+      input[type='text'],
+      input[type='password'],
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        background: #0e1015;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 160px;
+        background: #0e1015;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        resize: vertical;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      button {
+        padding: 10px 14px;
+        background: var(--accent);
+        border: none;
+        border-radius: 8px;
+        color: #0b0d12;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+      }
+      .muted {
+        color: #9aa3b2;
+        font-size: 12px;
+      }
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #0b0d12;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 12px;
+        min-height: 120px;
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 24px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6b7280;
+      }
+      .dot.ok {
+        background: #10b981;
+      }
+      .dot.err {
+        background: #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="panel">
+        <h2 style="margin: 0 0 6px 0">MVU 二次矫正 · 接口测试台</h2>
+        <div class="muted">按 Ctrl/⌘ + Enter 可快速发送</div>
+      </div>
+
+      <div class="panel">
+        <div class="row cols-3">
+          <div>
+            <label for="cfg-endpoint">接口地址</label>
+            <input id="cfg-endpoint" type="text" placeholder="https://your.api/endpoint" />
+          </div>
+          <div>
+            <label for="cfg-apikey">API Key（可选）</label>
+            <input id="cfg-apikey" type="password" placeholder="sk-***" />
+          </div>
+          <div>
+            <label for="cfg-task">任务类型</label>
+            <select id="cfg-task">
+              <option value="correct">语法矫正</option>
+              <option value="optimize">表达优化</option>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 12px; align-items: end">
+          <div>
+            <label for="cfg-apitype">API 类型</label>
+            <select id="cfg-apitype">
+              <option value="auto" selected>自动识别</option>
+              <option value="openai">OpenAI 兼容</option>
+              <option value="google">Google Generative</option>
+            </select>
+          </div>
+        </div>
+        <div class="row cols-3" style="margin-top: 12px; align-items: end">
+          <div>
+            <label for="cfg-timeout">超时（毫秒）</label>
+            <input id="cfg-timeout" type="text" class="mono" placeholder="15000" />
+          </div>
+          <div>
+            <label for="cfg-model">模型</label>
+            <select id="cfg-model">
+              <option value="" disabled selected>加载中...</option>
+            </select>
+          </div>
+          <div>
+            <label> <input id="cfg-mock" type="checkbox" /> 使用 Mock 模式（不发网络请求） </label>
+          </div>
+        </div>
+        <div class="row cols-2" style="margin-top: 12px; align-items: end">
+          <div>
+            <label for="cfg-temp">思考活跃度（温度）</label>
+            <input id="cfg-temp" type="text" class="mono" placeholder="1" />
+          </div>
+          <div>
+            <label for="cfg-maxtokens">最大Token数</label>
+            <input id="cfg-maxtokens" type="text" class="mono" placeholder="9400" />
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="gap: 6px">
+          <label for="input-text">输入内容</label>
+          <textarea id="input-text" class="mono" placeholder="在此粘贴要矫正/优化的文本..."></textarea>
+        </div>
+        <div class="actions" style="margin-top: 12px">
+          <button id="btn-send">发送并矫正</button>
+          <button id="btn-clear" class="secondary">清空</button>
+          <div class="status" id="status">
+            <div class="dot" id="status-dot"></div>
+            <span class="muted" id="status-text">空闲</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <details id="body-section">
+          <summary>正文（测试区域，默认折叠）</summary>
+          <div class="row" style="gap: 6px; margin-top: 10px">
+            <label for="cfg-body">统一正文（任务页的正则将在此文本上执行）</label>
+            <textarea
+              id="cfg-body"
+              class="mono"
+              placeholder="在此粘贴全量正文，供任务页按正则抽取所需片段..."
+            ></textarea>
+          </div>
+          <div class="actions" style="margin-top: 12px">
+            <button id="btn-preview-extract" class="secondary">查看“正则提取结果”</button>
+          </div>
+        </details>
+        <dialog id="regex-preview-modal">
+          <div style="margin-bottom: 8px; font-weight: 700">正则提取结果</div>
+          <pre id="regex-preview" class="mono" style="max-height: 40vh; overflow: auto; white-space: pre-wrap"></pre>
+          <div class="actions" style="margin-top: 12px"><button id="btn-close-preview">关闭</button></div>
+        </dialog>
+      </div>
+
+      <div class="panel" id="tasks-panel">
+        <h3 style="margin: 0 0 10px 0">任务页</h3>
+        <!-- v1.6.0: 模拟 ST 的“驻扎顶栏/收归扩展”位置切换控件，持久化由 JS 完成 -->
+        <div class="row cols-3" style="align-items: center; margin-bottom: 8px">
+          <div>
+            <label>显示位置（模拟 ST）</label>
+            <div style="display: flex; gap: 10px; margin-top: 6px">
+              <label><input type="radio" id="loc-topbar" name="loc" checked /> 驻扎顶栏</label>
+              <label><input type="radio" id="loc-extensions" name="loc" /> 收归扩展</label>
+            </div>
+          </div>
+        </div>
+        <div class="row cols-3" style="align-items: end">
+          <div>
+            <label for="task-select">选择任务</label>
+            <select id="task-select"></select>
+          </div>
+          <div>
+            <label for="task-name">任务名称</label>
+            <input id="task-name" type="text" placeholder="任务名称，如：优化<article>" />
+          </div>
+          <div class="actions" style="margin-left: auto; display: flex; gap: 10px; justify-content: flex-end">
+            <button id="task-add" class="secondary">新增任务</button>
+            <button id="task-remove" class="secondary">删除当前任务</button>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 12px; gap: 6px">
+          <label for="task-prompt">此任务页专属提示词（system）</label>
+          <textarea id="task-prompt" class="mono" placeholder="仅对当前任务生效，优先级低于全局提示词"></textarea>
+        </div>
+        <div class="row" style="margin-top: 12px; gap: 6px">
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <label>正则提取/排除规则（按序执行）</label>
+            <button id="task-add-rule" class="secondary">新增规则</button>
+          </div>
+          <div id="task-rules" class="row" style="gap: 8px"></div>
+        </div>
+      </div>
+
+      <style>
+        /* v1.5.1: 修复预览不可见问题，增强对话框样式 */
+        dialog#regex-preview-modal {
+          background: var(--panel);
+          color: var(--text);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 12px;
+          padding: 16px;
+        }
+        dialog#regex-preview-modal::backdrop {
+          background: rgba(0, 0, 0, 0.4);
+        }
+        dialog#regex-preview-modal pre {
+          background: #0e1015;
+          color: var(--text);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 8px;
+          padding: 12px;
+        }
+      </style>
+
+      <div class="panel">
+        <div class="row" style="gap: 6px">
+          <label for="cfg-system-prompt">统一提示词编辑器（作为 system 消息注入）</label>
+          <textarea id="cfg-system-prompt" class="mono" placeholder="在此编写你的统一提示词...\n（可留空）"></textarea>
+        </div>
+      </div>
+
+      <!-- v1.6.0: 新增“扩展页面（模拟）”容器，用于承载收归扩展后的内容 -->
+      <div class="panel">
+        <h3 style="margin: 0 0 10px 0">扩展页面（模拟）</h3>
+        <div id="extensions_settings2"></div>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="gap: 6px">
+          <label for="output">结果</label>
+          <pre id="output" class="mono" aria-live="polite"></pre>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

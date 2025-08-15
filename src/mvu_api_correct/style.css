@@ -1,0 +1,209 @@
+/* MVU API 矫正助手样式 */
+:root {
+  --mvu-gap: 10px;
+  --mvu-pad: 10px;
+  --mvu-bg: #0f1115;
+  --mvu-panel: #191c24;
+  --mvu-text: #e6e6e6;
+  --mvu-accent: #7aa2f7;
+}
+
+.mvu-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.mvu-panel {
+  background: var(--mvu-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.mvu-row {
+  display: grid;
+  gap: var(--mvu-gap);
+}
+
+.mvu-row.cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.mvu-row.cols-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.mvu-label {
+  font-size: 12px;
+  color: #aab1bf;
+}
+
+.mvu-input,
+.mvu-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #0e1015;
+  color: var(--mvu-text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.mvu-textarea {
+  width: 100%;
+  min-height: 160px;
+  background: #0e1015;
+  color: var(--mvu-text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.mvu-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mvu-button {
+  padding: 10px 14px;
+  background: var(--mvu-accent);
+  border: none;
+  border-radius: 8px;
+  color: #0b0d12;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mvu-button.secondary {
+  background: transparent;
+  color: var(--mvu-text);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.mvu-muted {
+  color: #9aa3b2;
+  font-size: 12px;
+}
+
+.mvu-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+.mvu-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.mvu-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.mvu-status-dot.ok {
+  background: #10b981;
+}
+
+.mvu-status-dot.err {
+  background: #ef4444;
+}
+
+.mvu-tasks-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--mvu-panel);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 10000;
+  display: none;
+}
+
+.mvu-tasks-panel.show {
+  display: block;
+}
+
+.mvu-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.mvu-modal.show {
+  display: flex;
+}
+
+.mvu-modal-content {
+  background: var(--mvu-panel);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 80vw;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.mvu-task-item {
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.mvu-task-item.active {
+  border-color: var(--mvu-accent);
+  background: rgba(122, 162, 247, 0.1);
+}
+
+.mvu-rule-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mvu-rule-item select,
+.mvu-rule-item input {
+  flex: 1;
+}
+
+.mvu-rule-item button {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .mvu-row.cols-2,
+  .mvu-row.cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .mvu-container {
+    padding: 16px;
+  }
+
+  .mvu-panel {
+    padding: 12px;
+  }
+}
